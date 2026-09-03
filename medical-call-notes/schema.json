@@ -1,0 +1,63 @@
+{
+  "type": "object",
+  "description": "Structured medical note extracted from a recorded clinician-patient phone call. Base every value on what was actually said; use null (or an empty list) when the call does not cover a field.",
+  "properties": {
+    "chief_complaint": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The primary reason for the call in the patient's own terms, stated concisely (e.g. \"shortness of breath and persistent cough\")."
+    },
+    "symptoms": {
+      "type": "array",
+      "description": "Every symptom the patient reports, one entry each, including duration/severity/triggers when mentioned (e.g. \"dry cough for 4 months\"). Only symptoms the patient confirms — not ones the clinician asked about and the patient denied.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relevant_history": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Medical and social history relevant to the complaint: prior diagnoses, smoking/alcohol use, occupational or environmental exposures, family history. A few sentences of prose.",
+      "x-cr-kind": "long_text"
+    },
+    "medications_discussed": {
+      "type": "array",
+      "description": "Medications mentioned on the call — current, past, or newly considered — with dose and status when stated (e.g. \"albuterol inhaler, newly prescribed\"). Empty if none come up.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assessment": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The clinician's working impression or differential as voiced on the call, including what they want to rule out. Do not infer a diagnosis the clinician never states.",
+      "x-cr-kind": "long_text"
+    },
+    "plan": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Agreed next steps: tests or imaging ordered, referrals, prescriptions, lifestyle advice.",
+      "x-cr-kind": "long_text"
+    },
+    "follow_up": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "When and how the patient will be seen or contacted next (e.g. \"clinic visit after CT results, ~2 weeks\"). Null if no follow-up is arranged."
+    }
+  },
+  "required": [
+    "chief_complaint",
+    "assessment",
+    "plan"
+  ]
+}

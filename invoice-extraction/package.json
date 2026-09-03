@@ -1,0 +1,16 @@
+{
+  "name": "invoice-extraction",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun app.ts"
+  },
+  "dependencies": {
+    "@cloudraker/api": "^0.5.0",
+    "jose": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "typescript": "^7.0.2"
+  }
+}

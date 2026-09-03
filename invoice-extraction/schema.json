@@ -1,0 +1,107 @@
+{
+  "type": "object",
+  "description": "An invoice. Base every value on what is printed on the document — never infer a figure it does not state, and never compute one yourself. Use null (or an empty array) wherever the document is silent. Dates as ISO 8601 (YYYY-MM-DD). Money as a plain number, with no symbol or thousands separator.",
+  "required": ["invoice_number", "vendor_name", "total"],
+  "properties": {
+    "invoice_number": {
+      "type": ["string", "null"],
+      "description": "The invoice's own identifier, as printed."
+    },
+    "po_number": {
+      "type": ["string", "null"],
+      "description": "The purchase order tied to the invoice, as printed."
+    },
+    "invoice_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Issue date."
+    },
+    "due_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Payment due date."
+    },
+    "payment_terms": {
+      "type": ["string", "null"],
+      "description": "Terms as stated (\"Net 30\", \"2/10 net 30\")."
+    },
+    "vendor_name": {
+      "type": ["string", "null"],
+      "description": "Legal name of the party issuing the invoice."
+    },
+    "vendor_address": {
+      "type": ["string", "null"],
+      "x-cr-kind": "address",
+      "description": "The vendor's address on one line."
+    },
+    "bill_to_name": {
+      "type": ["string", "null"],
+      "description": "Name of the party being billed."
+    },
+    "ship_to_name": {
+      "type": ["string", "null"],
+      "description": "Name of the party the goods are shipped to. Null when the invoice does not distinguish it from the billed party."
+    },
+    "currency": {
+      "type": ["string", "null"],
+      "description": "ISO 4217 code for every amount on the invoice (USD, CAD). Infer from an unambiguous symbol or the jurisdiction; null if genuinely unclear."
+    },
+    "subtotal": {
+      "type": ["number", "null"],
+      "x-cr-kind": "currency",
+      "description": "Total before tax, as stated. Do not add the lines up yourself."
+    },
+    "total": {
+      "type": ["number", "null"],
+      "x-cr-kind": "currency",
+      "description": "Amount payable including tax, as stated."
+    },
+    "amount_due": {
+      "type": ["number", "null"],
+      "x-cr-kind": "currency",
+      "description": "Balance still owing, when the invoice states one separately from the total — a deposit or credit already applied."
+    },
+    "taxes": {
+      "type": "array",
+      "description": "One entry per tax applied. Empty array when none are.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": ["string", "null"], "description": "Label of the tax, as printed." },
+          "percentage": { "type": ["number", "null"], "description": "Rate as a decimal, e.g. 0.05 for 5%." },
+          "amount": { "type": ["number", "null"], "description": "Amount charged." }
+        }
+      }
+    },
+    "additional_charges": {
+      "type": "array",
+      "description": "Charges beyond the line items — shipping, handling, fuel surcharge. Empty array when none.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": ["string", "null"], "description": "Label of the charge, as printed." },
+          "amount": { "type": ["number", "null"], "description": "Amount charged." }
+        }
+      }
+    },
+    "line_items": {
+      "type": "array",
+      "description": "One entry per billed line, in document order. Empty array when the invoice has no itemisation. Nested, so these values are not individually cited — the top-level totals are.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": ["string", "null"], "description": "Item or SKU code." },
+          "description": { "type": ["string", "null"], "description": "What was billed." },
+          "quantity": { "type": ["number", "null"], "description": "Units billed." },
+          "unit_price": { "type": ["number", "null"], "description": "Price per unit." },
+          "amount": { "type": ["number", "null"], "description": "Line total." }
+        }
+      }
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "x-cr-kind": "long_text",
+      "description": "Remittance instructions, late-payment terms or anything else materially conditioning payment."
+    }
+  }
+}

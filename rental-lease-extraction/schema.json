@@ -1,0 +1,144 @@
+{
+  "type": "object",
+  "description": "Key terms of a commercial property lease. Base every value on the document text — never infer a term it does not state, and never substitute a market-standard default. Use null (or an empty array) wherever the document is silent: null is a correct answer, an invented value is not. A document answering a field with \"N/A\", \"None\" or similar is stating absence — return null, never the literal text. Dates as ISO 8601 (YYYY-MM-DD). Money as a plain number, with no symbol or thousands separator.",
+  "required": ["type", "address", "start_date", "expiry_date"],
+  "properties": {
+    "name": {
+      "type": ["string", "null"],
+      "description": "Building or property name (\"Harbor Ridge Business Centre\"). Null when only a street address identifies the premises."
+    },
+    "address": {
+      "type": ["string", "null"],
+      "x-cr-kind": "address",
+      "description": "Municipal address of the leased premises on one line, including unit, city, province or state and postal code. The premises being let — not the landlord's own business address."
+    },
+    "suite": {
+      "type": ["string", "null"],
+      "description": "Suite or unit identifier alone (\"310\", \"Unit 12\"), without the street address."
+    },
+    "type": {
+      "type": ["string", "null"],
+      "description": "Premises type. Take it from an explicit premises-type field; if only a permitted use is given, classify from that.",
+      "enum": ["Office", "Retail", "Industrial", "Warehouse", "Medical", "Mixed-use", "Other", null]
+    },
+    "size": {
+      "type": ["number", "null"],
+      "description": "Rentable area in square feet, as a plain number — the area rent is calculated on."
+    },
+    "landlord_name": {
+      "type": ["string", "null"],
+      "description": "Legal name of the landlord, including any entity suffix. The owner, not the property manager."
+    },
+    "tenant_legal_name": {
+      "type": ["string", "null"],
+      "description": "Legal name of the tenant, including any entity suffix."
+    },
+    "tenant_contact_name": {
+      "type": ["string", "null"],
+      "description": "Named individual contact for the tenant, with their title if given."
+    },
+    "tenant_contact_email": {
+      "type": ["string", "null"],
+      "format": "email",
+      "description": "Tenant contact email address, exactly as written."
+    },
+    "tenant_contact_phone": {
+      "type": ["string", "null"],
+      "x-cr-kind": "phone",
+      "description": "Tenant contact telephone number, exactly as written."
+    },
+    "start_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Commencement date of the term. Use the explicit term commencement where the document gives one, otherwise the possession date. Never the signing date."
+    },
+    "expiry_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Expiry date of the initial term."
+    },
+    "term_years": {
+      "type": ["number", "null"],
+      "description": "Length of the initial term in years, as stated (\"7-year Term\"). Do not compute it from the dates."
+    },
+    "currency": {
+      "type": ["string", "null"],
+      "description": "ISO 4217 code for every amount in this record (CAD, USD). Infer from the jurisdiction or an unambiguous symbol; null if genuinely unclear."
+    },
+    "base_rent_rate_per_sf": {
+      "type": ["number", "null"],
+      "x-cr-kind": "currency",
+      "x-cr-currency": "CAD",
+      "description": "First-year base rent rate per square foot. Where a schedule escalates, this is lease year 1."
+    },
+    "base_rent_annual": {
+      "type": ["number", "null"],
+      "x-cr-kind": "currency",
+      "x-cr-currency": "CAD",
+      "description": "First-year annual base rent, as stated. Do not compute it from rate x area."
+    },
+    "rent_schedule": {
+      "type": "array",
+      "description": "The base rent schedule, one entry per lease year or rate step, in document order. Empty array when rent is flat. Nested, so its values are not individually cited — the top-level rent fields are.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "lease_year": {
+            "type": ["number", "null"],
+            "description": "Lease year number as labelled."
+          },
+          "rate_per_sf": {
+            "type": ["number", "null"],
+            "description": "Rate per square foot for this period."
+          },
+          "annual_rent": {
+            "type": ["number", "null"],
+            "description": "Annual base rent for this period."
+          }
+        }
+      }
+    },
+    "operating_costs_estimate_per_sf": {
+      "type": ["number", "null"],
+      "x-cr-kind": "currency",
+      "x-cr-currency": "CAD",
+      "description": "Estimated operating costs per square foot. Null on a gross lease where the tenant pays none."
+    },
+    "security_deposit": {
+      "type": ["number", "null"],
+      "x-cr-kind": "currency",
+      "x-cr-currency": "CAD",
+      "description": "Security deposit amount. Null if none is required."
+    },
+    "permitted_use": {
+      "type": ["string", "null"],
+      "x-cr-kind": "long_text",
+      "description": "What the tenant may use the premises for, including any express exclusions (\"no retail sales to the public\")."
+    },
+    "tenant_insurance": {
+      "type": ["string", "null"],
+      "description": "Insurance the tenant must carry, with coverage types and minimum limits as stated."
+    },
+    "assignment_and_sublease": {
+      "type": ["string", "null"],
+      "x-cr-kind": "long_text",
+      "description": "Whether the tenant may assign or sublet, whose consent is needed, and any carve-out."
+    },
+    "tenant_maintenance": {
+      "type": ["string", "null"],
+      "description": "What the tenant must maintain or repair."
+    },
+    "renewal_options": {
+      "type": ["string", "null"],
+      "description": "Renewal options: how many, how long, how the rate is set, and the notice required. Null if none granted."
+    },
+    "holdover_terms": {
+      "type": ["string", "null"],
+      "description": "What applies if the tenant stays past expiry — the holdover rent and the tenancy it creates."
+    },
+    "governing_law": {
+      "type": ["string", "null"],
+      "description": "The province, state or jurisdiction whose law governs, only where a governing-law clause says so. Do not infer it from the address."
+    }
+  }
+}
